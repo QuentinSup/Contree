@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+-<!DOCTYPE html>
 <html>
 	<title></title>
 	<meta charset="utf-8">
@@ -14,10 +14,19 @@
 <body>
 	<div id="body">
 		
-		<ul class="plateau" data-bind="foreach: plateau">
-			<li data-bind="foreach: $data, attr: { 'class': 'player' + $index() }">
-				<div data-bind="attr: { class: 'carte ' + color + ' ' + value, title: value + ' ' + color, style: 'left: -' + $index() * 100 + 'px' }">
-					&nbsp;
+		<ul class="plateau" data-bind="foreach: game.players">
+			<li data-bind="attr: { 'class': 'player player' + $index() }">
+				<div>
+					<h1>
+						<span data-bind="text: name"></span>
+						<span data-bind="visible: $root.game.dealer() == $data">D</span>
+						<span data-bind="visible: $root.game.currentPlayer() == $data">*</span>
+					</h1>
+					<div data-bind="foreach: hand">
+						<div data-bind="attr: { class: 'carte ' + color + ' ' + value + ' ' + ($parent.selectedCard() == $data?'choosed':''), title: value + ' ' + color, style: 'left: +' + $index() * 40 + 'px'}, click: $parent.chooseCard">
+							&nbsp;
+						</div>
+					</div>
 				</div>
 			</li>
 		</ul>
@@ -59,14 +68,77 @@
 		var splitOrder = {
 			'default': [3, 2, 3]
 		};
+
 		var UneCarte = (function() {
 
 			var UneCarte = function(color, value) {
-				this.color = color
-				this.value = value
+				this.color = color;
+				this.value = value;
 			}
 
 			return UneCarte
+
+		})();
+
+		var Player = (function() {
+
+			var sort = function() {
+				this.hand.sort(function(card1, card2) {
+					return card1.color < card2.color;
+				});
+			};
+
+			var Player = function(name, isHuman) {
+				var self = this;
+				this.name = ko.observable(name);
+				this.hand = ko.observableArray([]);
+				this.isHuman = ko.observable(isHuman);
+				this.selectedCard = ko.observable();
+				this.sort = sort;
+				this.chooseCard = function(card, e) {
+					self.sort();
+					self.selectedCard(card);
+				};
+			};
+
+			return Player;
+
+		})();
+
+		var Game = (function() {
+
+			var distribute = function(tirage) {
+				for(var i = 0; i < splitOrder.default.length; i++) {
+					var v = splitOrder.default[i];
+					for(var iPlayer = 0; iPlayer < this.players.length; iPlayer++) {
+						var hand = this.players[iPlayer].hand();
+						for(var k = 0; k < v; k++) {
+							hand.push(tirage.splice(0, 1)[0]);
+						}
+					}
+				}
+			};
+
+			var start = function() {
+				this.distribute(battreJeu(creerJeuVierge()));
+				this.dealer(this.players[0]);
+				this.currentPlayer(this.players[0]);
+			};
+
+			var playCard = function(player, card) {
+				this.turnTable.push(card);
+			};
+
+			var Game = function(players) {
+				this.players = players;
+				this.start = start;
+				this.turnTable = ko.observableArray([]);
+				this.distribute = distribute;
+				this.dealer = ko.observable();
+				this.currentPlayer = ko.observable();
+			};
+
+			return Game;
 
 		})();
 
@@ -88,44 +160,25 @@
 			}
 			do {
 				var pos = Math.floor(Math.random() * positions.length);
-				console.log(pos, positions.length, pos >= positions.length);
 				nouveauJeu.push(jeu[positions[pos]]);
 				positions.splice(pos, 1);
-				console.log(positions);
 			} while(positions.length > 0)		
 			return nouveauJeu;
 		};
 
-		var distrib = function(jeu) {
-			var plateau = [];
-			var iPlayer = 0;
-			plateau.length = 4;
-			for(var i = 0; i < splitOrder.default.length; i++) {
-				var v = splitOrder.default[i];
-				for(var iPlayer = 0; iPlayer < plateau.length; iPlayer++) {
-					var player = plateau[iPlayer];
-					if(!player) {
-						plateau[iPlayer] = player = [];
-					}
-					for(var k = 0; k < v; k++) {
-						player.push(jeu.splice(0, 1)[0]);
-					}
-				}
-			}
-			return plateau;
-
+		var startGame = function(players) {
+			var game = new Game(players);
+			return game;
 		};
 
-		var distribUI = function() {
-
-		};
-
-		var jeu = creerJeuVierge();
-		var nouveauJeu = battreJeu(jeu);
-		var plateau = distrib(nouveauJeu);
+		var players = [new Player('Me', true), new Player('Jhon', false), new Player('Cynthia', false), new Player('Kevin', false)];
+		game = new Game(players);
+		game.start();
 		
+
+
 		ko.applyBindings({
-			plateau: plateau
+			game: game
 		}, $('#body')[0]);
 
 	})();
