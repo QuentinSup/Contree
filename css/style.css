@@ -1,0 +1,188 @@
+
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+
+html, body {
+	font-family: Tahoma;
+	font-family: 'Roboto Slab', serif;
+	font-size: 11pt;
+	color: #404040;
+	padding: 0px;
+	margin: 0px;
+	background-color: #dedede;
+	height: 100%;
+}
+
+#body {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;	
+}
+
+
+ul.plateau {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+ul.plateau > li.player0 {
+	position: absolute;
+	left: 200px;
+	right: 200px;
+	bottom: 0px;
+	height: 200px;
+}
+
+ul.plateau > li.player1 {
+	position: absolute;
+	bottom: 0px;
+	left: -50%;
+	margin-left: 300px;
+	-webkit-transform:rotate(90deg);
+}
+
+ul.plateau > li.player1 .carte,
+ul.plateau > li.player3 .carte {
+	-webkit-transform:rotate(0deg);
+}
+
+ul.plateau > li.player2 {
+	position: absolute;
+	left: 200px;
+	right: 200px;
+	top: 0px;
+	height: 200px;
+}
+
+ul.plateau > li.player3 {
+	position: absolute;
+	bottom: 0px;
+	right: -50%;
+	margin-right: 300px;
+	-webkit-transform:rotate(90deg);
+}
+
+.carte {
+	display: inline-block;
+	position: relative;
+	left: -100px;
+}
+
+.carte:first-child {
+	left: 0px;
+}
+
+a {
+	color: rgb(42, 87, 202);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+hr {
+	border: 1px solid rgb(255, 255, 255);
+	border-bottom: 1px solid whitesmoke;
+}
+
+h1 {
+	font-weight: normal;
+	color: #444;
+	margin: 0px;
+	padding: 8px;
+	font-size: 1.4em;
+	background-color: whitesmoke;
+	border-bottom: 1px solid #dedede;
+}
+
+h2 {
+	font-weight: normal;
+	color: #4fa600;
+	margin: 0px;
+	font-size:1.3em;
+}
+
+h3 {
+	text-transform: uppercase;
+	color: #404040;
+	font-weight:normal;
+	margin: 0px;
+	font-size:1.0em;
+	border-bottom: 1px solid #dedede;
+	padding: 8px 0px;
+}
+
+#body > .section {
+	background-color: #fefefe;
+	margin: 1em;
+}
+
+hr {
+    height          :0px;
+    border-bottom   :1px solid #dedede;
+}
+
+input[type="text"], input[type="number"], input[type="password"],
+select, textarea {
+	text-wrap: normal;
+	border-color: #dedede;
+	border-radius: 2px;
+ -moz-border-radius:2px;
+ -webkit-border-radius:2px;
+	padding		 : 4px;
+	box-sizing	: border-box;
+	border-width: 1px;
+	border-style: solid;
+	outline: none;
+}
+
+p.row {
+	padding: 0px;
+	margin: 0px;
+}
+
+p.row > label {
+	padding: 4px;
+	background-color: whitesmoke;
+	width: 450px;
+	display: inline-block;
+	font-size: 0.9em;
+}
+
+.text {
+	padding: 1em 2em;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a[data-role="button"] {
+	background: #e1e1e2 !important; /* Old browsers */
+	background-image: linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* W3C */ 
+	background-image: -o-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* Opera 11.10+ */
+	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* FF3.6 */
+	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* IE10 */
+	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* Chrome 10+, Saf5.1+ */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #e1e1e2)) !important; /* Saf4+, Chrome */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#e1e1e2',GradientType=0 ) !important; /* IE6-9 */
+	color: #404040 !important;
+	margin: 3px !important;
+	cursor: pointer !important;
+	border-width: 1px !important;
+	border-style: solid !important;
+	outline: none !important;
+	padding				:4px 8px !important;
+	border-radius		: 3px !important;
+-moz-border-radius		: 3px !important;
+-webkit-border-radius	: 3px !important;
+	border-color		: #adaeb1 !important;
+}

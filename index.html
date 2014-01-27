@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<title></title>
+	<meta charset="utf-8">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1.0">
+	<meta name="viewport" content="width=device-width">
+	<meta name="author" content="Clevertech EURL">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="resources/games/standard.css">
+<body>
+	<div id="body">
+		
+		<ul class="plateau" data-bind="foreach: plateau">
+			<li data-bind="foreach: $data, attr: { 'class': 'player' + $index() }">
+				<div data-bind="attr: { class: 'carte ' + color + ' ' + value, title: value + ' ' + color, style: 'left: -' + $index() * 100 + 'px' }">
+					&nbsp;
+				</div>
+			</li>
+		</ul>
+
+	</div>
+</body>
+
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/knockout.min.js"></script>
+<script type="text/javascript">
+	
+	(function() {
+
+		var colors = ['Coeurs', 'Piques', 'Trefles', 'Carreaux'];
+		var orders = {
+			'default': [
+				{ name: 'As', value: 11 }, 
+				{ name: 'Dix', value: 10 },
+				{ name: 'Roi', value: 4 },
+				{ name: 'Reine', value: 3 },
+				{ name: 'Valet', value: 2 },
+				{ name: 'Neuf', value: 0 },
+				{ name: 'Huit', value: 0 },
+				{ name: 'Sept', value: 0 }
+			],
+			'atout': [
+				{ name: 'Valet', value: 20 },
+				{ name: 'Neuf', value: 14 },
+				{ name: 'As', value: 11 },
+				{ name: 'Dix', value: 10 },
+				{ name: 'Roi', value: 4 },
+				{ name: 'Reine', value: 3 },
+				{ name: 'Huit', value: 0 },
+				{ name: 'Sept', value: 0 }
+			]
+		};
+
+		var players = [];
+		var splitOrder = {
+			'default': [3, 2, 3]
+		};
+		var UneCarte = (function() {
+
+			var UneCarte = function(color, value) {
+				this.color = color
+				this.value = value
+			}
+
+			return UneCarte
+
+		})();
+
+		var creerJeuVierge = function() {
+			var jeu = [];
+			$.each(colors, function(j, color) {
+				$.each(orders.default, function(i, value) {
+					jeu.push(new UneCarte(color, value.name))
+				})		
+			});
+			return jeu;
+		};
+
+		var battreJeu = function(jeu) {
+			var nouveauJeu = [];
+			var positions = [];
+			for(var i = 0; i < jeu.length; i++) {
+				positions.push(i);
+			}
+			do {
+				var pos = Math.floor(Math.random() * positions.length);
+				console.log(pos, positions.length, pos >= positions.length);
+				nouveauJeu.push(jeu[positions[pos]]);
+				positions.splice(pos, 1);
+				console.log(positions);
+			} while(positions.length > 0)		
+			return nouveauJeu;
+		};
+
+		var distrib = function(jeu) {
+			var plateau = [];
+			var iPlayer = 0;
+			plateau.length = 4;
+			for(var i = 0; i < splitOrder.default.length; i++) {
+				var v = splitOrder.default[i];
+				for(var iPlayer = 0; iPlayer < plateau.length; iPlayer++) {
+					var player = plateau[iPlayer];
+					if(!player) {
+						plateau[iPlayer] = player = [];
+					}
+					for(var k = 0; k < v; k++) {
+						player.push(jeu.splice(0, 1)[0]);
+					}
+				}
+			}
+			return plateau;
+
+		};
+
+		var distribUI = function() {
+
+		};
+
+		var jeu = creerJeuVierge();
+		var nouveauJeu = battreJeu(jeu);
+		var plateau = distrib(nouveauJeu);
+		
+		ko.applyBindings({
+			plateau: plateau
+		}, $('#body')[0]);
+
+	})();
+
+</script>
+
+</html>

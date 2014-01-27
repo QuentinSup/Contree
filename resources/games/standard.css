@@ -1,0 +1,153 @@
+
+.carte {
+	background: transparent url('./standard.png') no-repeat;
+	background-size: 1600px;
+	width: 123px;
+	height: 179px;
+	margin: 1em;
+	border-radius: 5px;
+}
+
+.carte.Piques {
+	background-position: 0px -536px;
+}
+
+.carte.Piques.As {
+	background-position: 0px -536px;
+}
+
+.carte.Piques.Sept {
+	background-position: -738px -536px;
+}
+
+.carte.Piques.Huit {
+	background-position: -861px -536px;
+}
+
+.carte.Piques.Neuf {
+	background-position: -984px -536px;
+}
+
+.carte.Piques.Dix {
+	background-position: -1107px -536px;
+}
+
+.carte.Piques.Valet {
+	background-position: -1230px -536px;
+}
+
+.carte.Piques.Reine {
+	background-position: -1353px -536px;
+}
+
+.carte.Piques.Roi {
+	background-position: -1476px -536px;
+}
+
+.carte.Trefles {
+	background-position: 0px 0px;
+}
+
+.carte.Trefles.As {
+	background-position: 0px 0px;
+}
+
+.carte.Trefles.Sept {
+	background-position: -738px 0px;
+}
+
+.carte.Trefles.Huit {
+	background-position: -861px 0px;
+}
+
+.carte.Trefles.Neuf {
+	background-position: -984px 0px;
+}
+
+.carte.Trefles.Dix {
+	background-position: -1107px 0px;
+}
+
+.carte.Trefles.Valet {
+	background-position: -1230px 0px;
+}
+
+.carte.Trefles.Reine {
+	background-position: -1353px 0px;
+}
+
+.carte.Trefles.Roi {
+	background-position: -1476px 0px;
+}
+
+.carte.Carreaux {
+	background-position: 0px -179px;
+}
+
+.carte.Carreaux.As {
+	background-position: 0px -179px;
+}
+
+.carte.Carreaux.Sept {
+	background-position: -738px -179px;
+}
+
+.carte.Carreaux.Huit {
+	background-position: -861px -179px;
+}
+
+.carte.Carreaux.Neuf {
+	background-position: -984px -179px;
+}
+
+.carte.Carreaux.Dix {
+	background-position: -1107px -179px;
+}
+
+.carte.Carreaux.Valet {
+	background-position: -1230px -179px;
+}
+
+.carte.Carreaux.Reine {
+	background-position: -1353px -179px;
+}
+
+.carte.Carreaux.Roi {
+	background-position: -1476px -179px;
+}
+
+.carte.Coeurs {
+	background-position: 0px -357px;
+}
+
+.carte.Coeurs.As {
+	background-position: 0px -357px;
+}
+
+.carte.Coeurs.Sept {
+	background-position: -738px -357px;
+}
+
+.carte.Coeurs.Huit {
+	background-position: -861px -357px;
+}
+
+.carte.Coeurs.Neuf {
+	background-position: -984px -357px;
+}
+
+.carte.Coeurs.Dix {
+	background-position: -1107px -357px;
+}
+
+.carte.Coeurs.Valet {
+	background-position: -1230px -357px;
+}
+
+.carte.Coeurs.Reine {
+	background-position: -1353px -357px;
+}
+
+.carte.Coeurs.Roi {
+	background-position: -1476px -357px;
+}
