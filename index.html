@@ -1,4 +1,4 @@
--<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<title></title>
 	<meta charset="utf-8">
@@ -12,26 +12,31 @@
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="resources/games/standard.css">
 <body>
+	
 	<div id="body">
-		
+		<!-- ko with: game -->
+		<!-- ko if: game.currentTurnTable() && game.currentTurnTable().currentPlayer() -->
+		<input type="button" value="Play" data-bind="enable: game.currentTurnTable().currentPlayer().selectedCard(), click: game.currentPlayerPlaySelectedCard" />
+		<!-- /ko -->
+		<!-- /ko -->
 		<ul class="plateau" data-bind="foreach: game.players">
 			<li data-bind="attr: { 'class': 'player player' + $index() }">
 				<div>
 					<h1>
 						<span data-bind="text: name"></span>
-						<span data-bind="visible: $root.game.dealer() == $data">D</span>
-						<span data-bind="visible: $root.game.currentPlayer() == $data">*</span>
+						<span data-bind="visible: $root.game.currentTurnTable().dealer() == $data">D</span>
+						<span data-bind="visible: $root.game.currentTurnTable().currentPlayer() == $data">*</span>
 					</h1>
 					<div data-bind="foreach: hand">
-						<div data-bind="attr: { class: 'carte ' + color + ' ' + value + ' ' + ($parent.selectedCard() == $data?'choosed':''), title: value + ' ' + color, style: 'left: +' + $index() * 40 + 'px'}, click: $parent.chooseCard">
+						<div data-bind="attr: { class: 'carte ' + color + ' ' + name + ' ' + ($parent.selectedCard() == $data?'choosed':''), title: value + ' ' + color, style: 'left: +' + $index() * 40 + 'px'}, click: $parent.chooseCard">
 							&nbsp;
 						</div>
 					</div>
 				</div>
 			</li>
 		</ul>
-
 	</div>
+	
 </body>
 
 <script src="js/jquery-1.9.1.min.js"></script>
@@ -42,26 +47,26 @@
 
 		var colors = ['Coeurs', 'Piques', 'Trefles', 'Carreaux'];
 		var orders = {
-			'default': [
-				{ name: 'As', value: 11 }, 
-				{ name: 'Dix', value: 10 },
-				{ name: 'Roi', value: 4 },
-				{ name: 'Reine', value: 3 },
-				{ name: 'Valet', value: 2 },
-				{ name: 'Neuf', value: 0 },
-				{ name: 'Huit', value: 0 },
-				{ name: 'Sept', value: 0 }
-			],
-			'atout': [
-				{ name: 'Valet', value: 20 },
-				{ name: 'Neuf', value: 14 },
-				{ name: 'As', value: 11 },
-				{ name: 'Dix', value: 10 },
-				{ name: 'Roi', value: 4 },
-				{ name: 'Reine', value: 3 },
-				{ name: 'Huit', value: 0 },
-				{ name: 'Sept', value: 0 }
-			]
+			'default': { 
+				'As': 11 , 
+				'Dix': 10 ,
+				'Roi': 4 ,
+				'Reine': 3 ,
+				'Valet': 2 ,
+				'Neuf': 0 ,
+				'Huit': 0 ,
+				'Sept': 0 
+			},
+			'atout': {
+				'As': 11 , 
+				'Dix': 10 ,
+				'Roi': 4 ,
+				'Reine': 3 ,
+				'Valet': 20 ,
+				'Neuf': 14,
+				'Huit': 0 ,
+				'Sept': 0 
+			}
 		};
 
 		var players = [];
@@ -71,8 +76,9 @@
 
 		var UneCarte = (function() {
 
-			var UneCarte = function(color, value) {
+			var UneCarte = function(color, name, value) {
 				this.color = color;
+				this.name = name;
 				this.value = value;
 			}
 
@@ -88,12 +94,38 @@
 				});
 			};
 
+			var hasBetterCardThan = function(card) {
+				var hand = this.hand();
+				for(var i = 0; i < hand.length; i++) {
+					var cardx = hand[i];
+					if(cardx.color == card.color) {
+						if(cardx.value > card.value) {
+							return true;
+						}
+					}
+				}
+				return false;
+			};
+
+			var hasCardWithColor = function(color) {
+				var hand = this.hand();
+				for(var i = 0; i < hand.length; i++) {
+					var cardx = hand[i];
+					if(cardx.color == color) {
+						return true;
+					}
+				}
+				return false;
+			};
+
 			var Player = function(name, isHuman) {
 				var self = this;
 				this.name = ko.observable(name);
 				this.hand = ko.observableArray([]);
 				this.isHuman = ko.observable(isHuman);
 				this.selectedCard = ko.observable();
+				this.hasBetterCardThan = hasBetterCardThan;
+				this.hasCardWithColor = hasCardWithColor;
 				this.sort = sort;
 				this.chooseCard = function(card, e) {
 					self.sort();
@@ -105,15 +137,97 @@
 
 		})();
 
+		var Deal = (function() {
+
+			var Deal = function(score, color) {
+				this.score = score;
+				this.color = color;
+			};
+
+			return Deal;
+
+		})();
+
+		var TurnTable = (function() {
+
+			var isCardValid = function(player, card) {
+				if(this.cards.length == 0) return true;
+				var card1 = this.cards[0];
+				var lastCard = this.cards[this.cards.length - 1];
+				if(card.color == card1.color) {
+					if(card.color == this.game.deal.color) {
+						if(card.value < card1.value) {
+							if(player.hasBetterCardThan(lastCard)) {
+								return false;
+							}
+						}
+					}
+					return true;
+				} else {
+					if(player.hasCardWithColor(card1.color)) {
+						return false;
+					} else if((card.color != this.game.deal.color) && player.hasCardWithColor(this.game.deal.color)) {
+						return false;
+					}
+					return true;
+				}
+			};
+
+			var play = function(player, card) {
+				if(this.isCardValid(player, card)) {
+					this.cards.push(card);
+					if(!this.isEnded()) {
+						this.currentPlayer(this.game.getPlayerAfter(this.currentPlayer()))
+					} else {
+						this.currentPlayer(null);
+					}
+					return true;
+				}
+				return false;
+			};
+
+			var isEnded = function() {
+				return this.cards.length == 4;
+			};
+
+			var isStarted = function() {
+				return this.cards.length > 0;
+			};
+
+			var start = function() {
+				this.currentPlayer(this.playerOne);
+			};
+
+			var TurnTable = function(game, dealer, playerOne) {
+				this.game = game;
+				this.playerOne = playerOne;
+				this.cards = [];
+				this.play = play;
+				this.start = start;
+				this.isEnded = isEnded;
+				this.isStarted = isStarted;
+				this.isCardValid = isCardValid;
+				this.currentPlayer = ko.observable();
+				this.dealer = ko.observable(dealer);
+			};
+
+			return TurnTable;
+
+		})();
+
+
 		var Game = (function() {
 
 			var distribute = function(tirage) {
+				this.cards.length = 0;
 				for(var i = 0; i < splitOrder.default.length; i++) {
 					var v = splitOrder.default[i];
 					for(var iPlayer = 0; iPlayer < this.players.length; iPlayer++) {
 						var hand = this.players[iPlayer].hand();
 						for(var k = 0; k < v; k++) {
-							hand.push(tirage.splice(0, 1)[0]);
+							var card = tirage.splice(0, 1)[0];
+							hand.push(card);
+							this.cards.push(card);
 						}
 					}
 				}
@@ -121,21 +235,64 @@
 
 			var start = function() {
 				this.distribute(battreJeu(creerJeuVierge()));
-				this.dealer(this.players[0]);
-				this.currentPlayer(this.players[0]);
+				//TODO
+				this.setDeal(80, 'Coeurs');
+				this.startTurnTable(this.players[0], this.players[1]);
+			};
+
+			var startTurnTable = function(dealer, playerOne) {
+				var turnTable = new TurnTable(this, dealer, playerOne);
+				this.turnTables.push(turnTable);
+				this.currentTurnTable(turnTable);
+				turnTable.start();
 			};
 
 			var playCard = function(player, card) {
-				this.turnTable.push(card);
+				
+				if(this.currentTurnTable().play(player, card)) {
+					alert(player.name() + ' play card ' + card.name + ' ' + card.color);	
+				}
+			};
+
+			var currentPlayerPlaySelectedCard = function() {
+				var player = this.currentTurnTable().currentPlayer();
+				this.playCard(player, player.selectedCard());
+			};
+
+			var setDeal = function(score, color) {
+				this.deal = new Deal(score, color);
+				for(var i = 0; i < this.cards.length; i++) {
+					var card = this.cards[i];
+					if(card.color == color || color == 'TA') {
+						card.value = orders.atout[card.name];
+					}
+				}
+			};
+
+			var getPlayerAfter = function(player) {
+				var i = this.players.indexOf(player);
+				if(i == this.players.length - 1) {
+					i = -1;
+				}
+				console.log(this.players.slice(i + 1, i + 2)[0].name());
+				return this.players.slice(i + 1, i + 2)[0];
 			};
 
 			var Game = function(players) {
 				this.players = players;
+
 				this.start = start;
-				this.turnTable = ko.observableArray([]);
+				this.startTurnTable = startTurnTable;
+				this.getPlayerAfter = getPlayerAfter;
+				this.currentPlayerPlaySelectedCard = currentPlayerPlaySelectedCard;
+				this.playCard = playCard;
+				this.cards = [];
+				this.deal = null;
+				this.currentTurnTable = ko.observable();
+				this.turnTables = ko.observableArray([]);
 				this.distribute = distribute;
-				this.dealer = ko.observable();
-				this.currentPlayer = ko.observable();
+				this.setDeal = setDeal;
+
 			};
 
 			return Game;
@@ -145,8 +302,8 @@
 		var creerJeuVierge = function() {
 			var jeu = [];
 			$.each(colors, function(j, color) {
-				$.each(orders.default, function(i, value) {
-					jeu.push(new UneCarte(color, value.name))
+				$.each(orders.default, function(name, value) {
+					jeu.push(new UneCarte(color, name, value))
 				})		
 			});
 			return jeu;
@@ -174,8 +331,6 @@
 		var players = [new Player('Me', true), new Player('Jhon', false), new Player('Cynthia', false), new Player('Kevin', false)];
 		game = new Game(players);
 		game.start();
-		
-
 
 		ko.applyBindings({
 			game: game

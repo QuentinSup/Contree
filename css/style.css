@@ -13,7 +13,7 @@ html, body {
 }
 
 #body {
-	position: absolute;
+	position: relative;
 	top: 0px;
 	bottom: 0px;
 	left: 0px;
@@ -30,6 +30,11 @@ ul.plateau {
 	bottom: 0px;
 	left: 0px;
 	right: 0px;
+	width: 1200px;
+	height: 800px;
+	left: 50%;
+	margin: 30px;
+	margin-left: -630px;
 }
 
 ul.plateau > li.player {
@@ -163,30 +168,4 @@ hr {
 	right: 0px;
 	background: #000;
 	opacity: 0.5;
-}
-
-button,
-input[type="button"],
-input[type="submit"],
-input[type="reset"],
-a[data-role="button"] {
-	background: #e1e1e2 !important; /* Old browsers */
-	background-image: linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* W3C */ 
-	background-image: -o-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* Opera 11.10+ */
-	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* FF3.6 */
-	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* IE10 */
-	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #e1e1e2 100%) !important; /* Chrome 10+, Saf5.1+ */
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #e1e1e2)) !important; /* Saf4+, Chrome */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#e1e1e2',GradientType=0 ) !important; /* IE6-9 */
-	color: #404040 !important;
-	margin: 3px !important;
-	cursor: pointer !important;
-	border-width: 1px !important;
-	border-style: solid !important;
-	outline: none !important;
-	padding				:4px 8px !important;
-	border-radius		: 3px !important;
--moz-border-radius		: 3px !important;
--webkit-border-radius	: 3px !important;
-	border-color		: #adaeb1 !important;
 }
